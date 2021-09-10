@@ -68,3 +68,21 @@
     }
     (*env)->SetIntField(env,jobj, fid, age);
     } 
+    
+# lottie的简单实用
+
+### build.gradle(:app)里添加依赖
+     implementation 'com.airbnb.android:lottie:3.4.0'
+###  xml添加布局
+      <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            app:lottie_fileName="colorline.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true" />
+###  资源文件里放入lottie的专用json文件
+      colorline.json
+ 
