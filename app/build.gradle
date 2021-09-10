@@ -1,0 +1,152 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+}
+apply plugin: 'com.didi.dokit'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        applicationId "com.jerry.mobile"
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            moduleName "helloworld_jni"
+            abiFilters  "armeabi-v7a", "x86"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false//开启混淆
+            shrinkResources false
+            zipAlignEnabled false//去除无用资源
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+//            matchingFallbacks = ['release']
+        }
+        release {
+            minifyEnabled false//开启混淆
+            shrinkResources false
+            zipAlignEnabled false//去除无用资源
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+//            matchingFallbacks = ['debug']
+        }
+
+
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+    sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jni/'] } }
+
+    androidExtensions { experimental = true }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        dataBinding = true
+        viewBinding true
+    }
+
+}
+
+
+dokitExt {
+    //通用设置
+    comm {
+        //地图经纬度开关
+        gpsSwitch true
+        //网络开关
+        networkSwitch true
+        //大图开关
+        bigImgSwitch true
+        //webView js 抓包
+        webViewSwitch true
+    }
+
+    slowMethod {
+        //调用栈模式配置 对应gradle.properties中DOKIT_METHOD_STRATEGY=0
+        stackMethod {
+            //默认值为 5ms 小于该值的函数在调用栈中不显示
+            thresholdTime 10
+            //调用栈函数入口 千万不要用我默认的配置 如果有特殊需求修改成项目中自己的入口 假如不需要可以去掉该字段
+            enterMethods = ["com.didichuxing.doraemondemo.MainDebugActivity.test1"]
+            //黑名单 粒度最小到类 暂不支持到方法  千万不要用我默认的配置 如果有特殊需求修改成项目中自己的入口 假如不需要可以去掉该字段
+            methodBlacklist = ["com.facebook.drawee.backends.pipeline.Fresco"]
+        }
+        //普通模式配置 对应gradle.properties中DOKIT_METHOD_STRATEGY=1
+        normalMethod {
+            //默认值为 500ms 小于该值的函数在运行时不会在控制台中被打印
+            thresholdTime 500
+            //需要针对函数插装的包名 千万不要用我默认的配置 如果有特殊需求修改成项目中自己的项目包名 假如不需要可以去掉该字段
+            packageNames = ["com.didichuxing.doraemondemo"]
+            //不需要针对函数插装的包名&类名 千万不要用我默认的配置 如果有特殊需求修改成项目中自己的项目包名 假如不需要可以去掉该字段
+            methodBlacklist = ["com.didichuxing.doraemondemo.dokit"]
+        }
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    api project(':JetpackMvvm')
+    //微信开源项目，替代SP
+    implementation 'com.tencent:mmkv:1.0.22'
+    //轮播图
+    implementation 'com.github.zhpanvip:BannerViewPager:3.1.5'
+    //BaseAdapter
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+    //第三方recyclerview
+    implementation 'com.yanzhenjie.recyclerview:x:1.3.2'
+    //管理界面状态库
+    implementation 'com.kingja.loadsir:loadsir:1.3.6'
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    //屏幕适配
+    implementation 'me.jessyan:autosize:1.2.1'
+    //状态栏
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+    //对话框组件库
+    implementation 'com.github.kongzue.DialogX:DialogX:0.0.38'
+    //升级更新库
+    implementation 'com.kongzue.kongzueupdatesdk:kongzueupdatesdk:3.0.0'
+
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.4.0'
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
+    implementation 'com.github.getActivity:XXPermissions:11.6'
+    implementation 'com.github.getActivity:ToastUtils:9.5'
+//    debugImplementation 'com.didichuxing.doraemonkit:dokitx:3.4.3'
+//    releaseImplementation 'com.didichuxing.doraemonkit:dokitx-no-op:3.4.3'
+    debugImplementation 'com.didichuxing.doraemonkit:dokitx:3.3.5'
+    releaseImplementation 'com.didichuxing.doraemonkit:dokitx-no-op:3.3.5'
+}
